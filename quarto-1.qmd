@@ -4,3 +4,71 @@ author: Henry Yang
 format: html
 ---
 
+
+```{r}
+#| echo: false
+#| message: false
+library(tidyverse)
+library(palmerpenguins)
+```
+
+```{r}
+#| echo: false
+library(tidyverse)
+library(palmerpenguins)
+
+# 1. Clean data
+penguins_scatter <- penguins %>%
+  drop_na(bill_length_mm, flipper_length_mm, species)
+
+# 2. Color palette
+penguin_colors <- c("Adelie" = "#FF8C00", "Chinstrap" = "#9932CC", "Gentoo" = "#008B8B")
+
+# 3. Build the graphic
+ggplot(penguins_scatter, aes(x = bill_length_mm, y = flipper_length_mm, color = species, shape = species)) +
+  # Linear model trend lines per species
+  geom_smooth(
+    method = "lm", 
+    se = FALSE, 
+    linewidth = 1.2, 
+    alpha = 0.8,
+    show.legend = FALSE
+  ) +
+  # High-contrast styled points
+  geom_point(size = 3, alpha = 0.75) +
+  # Map manual color and shapes
+  scale_color_manual(values = penguin_colors) +
+  scale_shape_manual(values = c(16, 17, 18)) +
+  # Professional labels
+  labs(
+    title = "Penguin Bill vs. Flipper Dimensions",
+    subtitle = "Distinct biological clusters emerge across Adelie, Chinstrap, and Gentoo species",
+    x = "Bill Length (mm)",
+    y = "Flipper Length (mm)",
+    color = "Species",
+    shape = "Species",
+    caption = "Data: Palmer Station LTER | Graphic via tidyverse"
+  ) +
+  # Apply base theme
+  theme_minimal(base_size = 14) +
+  # Custom styling
+  theme(
+    text = element_text(family = "sans", color = "#222222"),
+    plot.title = element_text(face = "bold", size = 19, margin = margin(b = 6)),
+    plot.subtitle = element_text(size = 12, color = "#555555", margin = margin(b = 22)),
+    plot.caption = element_text(size = 9, color = "#888888", margin = margin(t = 15)),
+    
+    # Elegant legend placement at the bottom
+    legend.position = "bottom",
+    legend.title = element_text(face = "bold", size = 11),
+    legend.text = element_text(size = 11),
+    legend.background = element_rect(fill = "#FDFDFD", color = "#EAEAEA", linewidth = 0.5),
+    
+    # Soft, subtle gridlines
+    panel.grid.major = element_line(color = "#EBEBEB", linewidth = 0.5),
+    panel.grid.minor = element_blank(),
+    
+    axis.title = element_text(face = "bold"),
+    plot.margin = margin(22, 22, 22, 22)
+  )
+```
